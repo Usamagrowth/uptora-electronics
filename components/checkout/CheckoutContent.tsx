@@ -641,7 +641,7 @@ export function CheckoutContent() {
                 disabled={isPlacingOrder}
               >
                 <CreditCard className="w-5 h-5 mr-2" />
-                Pay with Stripe
+                Pay with paystack
               </Button>
               <Button
                 onClick={() => handlePaymentMethodSelect("clerk")}

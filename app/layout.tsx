@@ -1,13 +1,14 @@
+// app/layout.tsx
 import { ReactNode } from "react";
 import type { Metadata } from "next";
-import { ClerkProvider } from "@clerk/nextjs";
 import localFont from "next/font/local";
-import { Toaster } from "sonner";
 import Script from "next/script";
-import Head from "next/head";
+import { Toaster } from "sonner";
+import { ClerkProvider } from "@clerk/nextjs";
 import { UserDataProvider } from "@/contexts/UserDataContext";
 import "./globals.css";
 
+// --- Fonts ---
 const poppins = localFont({
   src: "./fonts/Poppins.woff2",
   variable: "--font-poppins",
@@ -19,13 +20,13 @@ const raleway = localFont({
   variable: "--font-raleway",
   weight: "100 900",
 });
-
 const opensans = localFont({
   src: "./fonts/Open Sans.woff2",
   variable: "--font-open-sans",
   weight: "100 800",
 });
 
+// --- Metadata ---
 export const metadata: Metadata = {
   metadataBase: new URL("https://uptoraelectronics.vercel.app"),
   title: {
@@ -50,11 +51,6 @@ export const metadata: Metadata = {
   authors: [{ name: "Usama" }],
   creator: "Usama",
   publisher: "Usama",
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
-  },
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -80,63 +76,51 @@ export const metadata: Metadata = {
     images: ["/og-image.jpg"],
     creator: "@Uptora",
   },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
-  },
-  verification: {
-    google: "your-google-verification-code",
-    // Add other verification codes as needed
-  },
-  alternates: {
-    canonical: "https://uptoraelectronics.vercel.app",
-  },
 };
 
-const RootLayout = async ({ children }: { children: ReactNode }) => {
-  const GADSENSE_CLIENT_ID = "ca-pub-6542623777003381"; // Define it once
+// --- Client-only wrapper ---
+const ClientProviders = ({ children }: { children: ReactNode }) => {
+  const GADSENSE_CLIENT_ID = "ca-pub-6542623777003381";
   return (
     <ClerkProvider>
-      <html lang="en">
-        <Head>
-          <meta name="google-adsense-account" content={GADSENSE_CLIENT_ID} />
-        </Head>
-        <body
-          className={`${poppins.variable} ${raleway.variable} ${opensans.variable} antialiased`}
-        >
-          <UserDataProvider>{children}</UserDataProvider>
-          <Toaster
-            position="bottom-right"
-            richColors
-            closeButton
-            toastOptions={{
-              style: {
-                background: "#ffffff",
-                color: "#1f2937",
-                border: "1px solid #e5e7eb",
-                borderRadius: "8px",
-                fontSize: "14px",
-              },
-              className: "sonner-toast",
-            }}
-          />
+      <UserDataProvider>
+        {children}
 
-          <Script
-            async
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${GADSENSE_CLIENT_ID}`}
-            strategy="beforeInteractive"
-          />
-        </body>
-      </html>
+        <Toaster
+          position="bottom-right"
+          richColors
+          closeButton
+          toastOptions={{
+            style: {
+              background: "#ffffff",
+              color: "#1f2937",
+              border: "1px solid #e5e7eb",
+              borderRadius: "8px",
+              fontSize: "14px",
+            },
+            className: "sonner-toast",
+          }}
+        />
+
+        <Script
+          async
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${GADSENSE_CLIENT_ID}`}
+          strategy="beforeInteractive"
+        />
+      </UserDataProvider>
     </ClerkProvider>
   );
 };
 
-export default RootLayout;
+// --- Root Layout ---
+export default function RootLayout({ children }: { children: ReactNode }) {
+  return (
+    <html lang="en">
+      <body
+        className={`${poppins.variable} ${raleway.variable} ${opensans.variable} antialiased`}
+      >
+        <ClientProviders>{children}</ClientProviders>
+      </body>
+    </html>
+  );
+}
