@@ -52,7 +52,7 @@
     "lodash": "^4.17.21",
     "lucide-react": "^0.552.0",
     "motion": "^12.23.19",
-    "next": "^16.0.1",
+    "next": "16.0.10",
     "next-sanity": "^11.6.12",
     "nodemailer": "^7.0.10",
     "paystack": "^2.0.1",
